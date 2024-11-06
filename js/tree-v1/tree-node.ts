@@ -1114,10 +1114,8 @@ export class TreeNode {
       directly: false,
       ...opts,
     };
-    let map = tree.checkedMap;
-    if (!options.directly) {
-      map = new Map(tree.checkedMap);
-    }
+    
+    const map = new Map(tree.checkedMap);
     if (!this.isCheckable()) {
       // 当前节点非可选节点，则不可设置选中态
       return tree.getChecked(map);
@@ -1151,12 +1149,9 @@ export class TreeNode {
       // 状态更新务必放到扩散动作之后
       // 过早的状态更新会导致后续计算出错
       if (options.directly) {
-        const relatedNodes = tree.getRelatedNodes([this.value], {
-          reverse: true,
-        });
-        relatedNodes.forEach((node) => {
-          node.updateChecked();
-        });
+        const checkedValues = tree.getChecked(map);
+        tree.replaceChecked(checkedValues);
+        return checkedValues;
       }
     }
 
